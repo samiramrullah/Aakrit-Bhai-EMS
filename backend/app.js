@@ -34,7 +34,6 @@ app.use(bodyParser.json())
 
 //Static Url
 app.use('/Uploads',express.static('Uploads'))
-
 //Handeling cors error
 app.use(cors);
 app.use('/user', userRoutes);

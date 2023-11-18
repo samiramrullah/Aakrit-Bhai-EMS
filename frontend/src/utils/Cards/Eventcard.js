@@ -10,9 +10,6 @@ import { Link } from 'react-router-dom';
 
 
 const Eventcard = ({ location, date, img, eventName, id, isStanding }) => {
-    console.log('====================================');
-    console.log(isStanding);
-    console.log('====================================');
     return (
         <Card sx={{ maxWidth: 500 }}>
             <CardMedia
