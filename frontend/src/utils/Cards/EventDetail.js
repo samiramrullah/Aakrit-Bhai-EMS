@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Card from '@mui/material/Card';
+import axios from 'axios'
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -18,7 +19,11 @@ const EventDetails = () => {
             .then((data) => setEventDetails(data.doc))
             .catch(err => console.log(err))
     }, [id])
-    console.log(eventDetails, "hhhhhhhhhhhhhhhhhhhhh");
+    const deleteEvent=()=>{
+       axios.delete(`http://localhost:5000/event/${id}`)
+       .then((res)=>alert(res?.data?.message))
+       .catch((err)=>alert(err))
+    }
     return (
         <Card sx={{ maxWidth: 800 }}>
             <CardMedia
@@ -51,7 +56,6 @@ const EventDetails = () => {
                         </Grid>
                     </Grid>
                 </Box>
-
                 {eventDetails?.isStanding === true ? (
                     <>
                         <p class="text-center pt-2">Standing Show</p>
@@ -137,7 +141,7 @@ const EventDetails = () => {
             </CardContent>
             <CardActions>
                 <Button size="small">Edit</Button>
-                <Button size="small">Delete</Button>
+                <Button onClick={deleteEvent} size="small">Delete</Button>
             </CardActions>
         </Card>
     );

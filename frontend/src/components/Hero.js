@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import Navbar from './Navbar'
 import fablogo from '../assets/fablogo.jpeg'
 import instalogo from '../assets/insta.jpeg'
@@ -20,7 +21,7 @@ const Hero = () => {
 
                             <h1 class="text-white mb-5">Night Live 2023</h1>
 
-                            <a class="btn custom-btn smoothscroll" href="1section_2">Let's begin</a>
+                            <Link to='/login' class="btn custom-btn smoothscroll" href="1section_2">Let's begin</Link>
                         </div>
 
                         <div class="col-lg-12 col-12 mt-auto d-flex flex-column flex-lg-row text-center">
