@@ -52,7 +52,7 @@ const Addevent = () => {
     formData.append('standingPrice', standingPrice);
     formData.append('eventDetails', eventDetails);
     formData.append('file', eventImage);
-    axios.post('http://localhost:5000/event/addevent', formData)
+    axios.post(`${process.env.REACT_APP_API_KEY}event/addevent`, formData)
       .then(response => {
         alert("Event Successfully Created")
       })
@@ -76,6 +76,7 @@ const Addevent = () => {
   const handleChangeicon = (event) => {
     setIsStanding(event.target.checked);
   };
+  console.log(process.env.REACT_APP_API_KEY)
 
   return (
     <div class="container" >

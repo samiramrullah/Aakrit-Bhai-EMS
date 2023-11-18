@@ -4,7 +4,7 @@ import Eventcard from '../../utils/Cards/Eventcard';
 const OngoingEvent = () => {
     const [allOngoingEvents, setAllOngoingEvents] = useState();
     useEffect(() => {
-        fetch("http://localhost:5000/event/ongoingevent")
+        fetch(`${process.env.REACT_APP_API_KEY}event/ongoingevent`)
             .then((response) => response.json())
             .then((data) => setAllOngoingEvents(data.doc))
             .catch((error) => console.log(error));

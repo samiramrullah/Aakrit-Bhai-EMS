@@ -4,7 +4,7 @@ import Eventcard from '../../utils/Cards/Eventcard';
 const PastEvents = () => {
     const [allPastEvents, setAllPastEvents] = useState();
     useEffect(() => {
-        fetch("http://localhost:5000/event/pastevents")
+        fetch(`${process.env.REACT_APP_API_KEY}event/pastevents`)
             .then((response) => response.json())
             .then((data) => setAllPastEvents(data.doc))
             .catch((error) => console.log(error));

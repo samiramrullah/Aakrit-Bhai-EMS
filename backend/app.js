@@ -23,7 +23,7 @@ const error = require('./error');
 mongoose.set('strictQuery', false)
 mongoose.connect(process.env.ConnectionString).then(() => {
     console.log('Connected to Database');
-}).catch((err) => console.log("Error in connecting to database"))
+}).catch(() => console.log("error in connecting database"))
 mongoose.Promise = global.Promise;
 
 
