@@ -1,66 +1,49 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt=require('bcrypt')
-const jwt = require('../../middleware/jwtAssign');
-const User = require('../../models/user');
-const { default: mongoose } = require("mongoose");
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const validator = require('validator')
+const mongoose = require('mongoose')
+const userScheme = require('../../models/user')
 
-router.post('/register',(req,res,next)=>{
-    User.find({email:req.body.email})
-    .exec()
-    .then((result)=>{
-        if(result.length>1)
-        {
-            res.status(200).json({
-                message:'Email already exists'
-            })
-        }
-        else
-        {
-            bcrypt.hash(req.body.password,12,(err,hash)=>{
-                if(err)
-                {
-                    return res.status(500).json({
-                        error:err
-                    })
-                }
-                else{
-                    const user=new User({
-                        _id: new mongoose.Types.ObjectId(),
-                        name:req.body.name,
-                        email:req.body.email,
-                        password:req.body.password,
-                    });
-                    user
-                    .save()
-                    .then((result)=>res.status(201).json({
-                        message:'User Registered'
-                    }))
-                    .catch(err=>res.status(500).json({
-                        error:err
-                    }))
-                }
-            })
-        }
-    })
+router.post('/register', async (req, res, next) => {
+    try {
+        const { name, email, password } = req.body;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!name || !email || !password || !validator.isEmail(email) || !passwordRegex.test(password)) return res.status(400).json({ message: 'Invalid data' })
+        const user = await userScheme.findOne({ email })
+        if (user) return res.status(400).json({ message: 'Email Already Exist' })
+        const salt = await bcrypt.genSalt(10);
+        const hashedpassword = await bcrypt.hash(password, salt);
+        const newUser = new userScheme({ _id: new mongoose.Types.ObjectId, name, email, password: hashedpassword });
+        newUser.save();
+        res.status(201).json({ message: "User successfully registered." })
+    } catch (error) {
+        return res.status(401).json({ message: 'failed to Regsiter' });
+    }
 })
 
-router.post("/signIn", (req, res, next) => {
-
-    User.findOne({ email: req.body.email })
-    .exec()
-        .then((user) => {
-            if (user !== null && user.validPassword(req.body.password)) {
-                let token = jwt.generateJWT({email:req.body.email, phone:req.body.phone});
-                res.cookie('token', token);
-                res.status(201).json({message:"logged in"})
-            }
-            else
-                res.status(400).json({ "message": "User or Password incorrect" })   
-        })
-        .catch((err) => {
-            res.status(400).json({ message: err.message });
-        });
+router.post('/login', async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        console.log('====================================');
+        console.log(email, password );
+        console.log('====================================');
+        if (!email || !password ) return res.status(400).json({ message: 'Invalid Credentials' });
+        const user = await userScheme.findOne({ email });
+       
+        if (!user || ! bcrypt.compare(password, user.password)) {
+            return res.status(401).json({ message: 'Invalid Credentials' });
+        }
+        console.log('====================================');
+       console.log("here");
+       console.log('====================================');
+        const token = jwt.sign({ userId: user._id, email: user.email, name: user.name }, process.env.JWT_SECRET, { expiresIn: '2h' });
+        res.status(200).json({ message: 'Successfully Logged in', token });
+    } catch (error) {
+        return res.status(401).json({ message: 'Failed to login' });
+    }
 });
+
 
 module.exports = router;

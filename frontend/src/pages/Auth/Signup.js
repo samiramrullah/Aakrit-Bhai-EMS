@@ -3,6 +3,7 @@ import axios from 'axios'
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from 'react'
 import Navbar from '../../components/Navbar'
+import { Link } from 'react-router-dom';
 
 const Signup = () => {
   const [formDate, setFormData] = useState({})
@@ -19,14 +20,14 @@ const Signup = () => {
     axios.post(`${process.env.REACT_APP_API_KEY}user/register`, formDate)
       .then((res => {
         toast.success(res?.data?.message, {
-          position: 'top-left'
+          position: 'top-right'
         })
       }))
       .catch((err=>{
-        toast.error(err)
+        toast.warning(err?.response?.data.message)
       }))
   }
-  console.log(process.env.REACT_APP_API_KEY);
+
   return (
     <>
       <Navbar />
@@ -68,9 +69,8 @@ const Signup = () => {
                             </div>
                           </div>
                           <div class="form-check d-flex justify-content-center mb-5">
-                            <input onChange={onChangeHandler} class="form-check-input onChange={onChangeHandler} me-2" type="checkbox" />
                             <label class="form-check-label" for="form2Example3">
-                              I agree all statements in <a href="#!">Terms of service</a>
+                              Already have an Account? <Link to="/login">Login</Link>
                             </label>
                           </div>
                           <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
