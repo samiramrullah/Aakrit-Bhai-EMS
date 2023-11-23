@@ -14,15 +14,20 @@ const EventDetails = () => {
     const [eventDetails, setEventDetails] = useState();
     const { id } = useParams()
     useEffect(() => {
-        fetch(`http://localhost:5000/event/${id}`)
+        fetch(`http://localhost:5001/event/${id}`)
             .then((response) => response.json())
             .then((data) => setEventDetails(data.doc))
             .catch(err => console.log(err))
     }, [id])
-    const deleteEvent=()=>{
-       axios.delete(`http://localhost:5000/event/${id}`)
-       .then((res)=>alert(res?.data?.message))
-       .catch((err)=>alert(err))
+    const deleteEvent = () => {
+        axios.post(`${process.env.REACT_APP_API_KEY}event/delete`, {id:id})
+            .then(response => {
+                
+                alert("Event Successfully Deleted")
+            })
+            .catch(error => {
+                alert("Error occured while creating the event")
+            })
     }
     return (
         <Card sx={{ maxWidth: 800 }}>

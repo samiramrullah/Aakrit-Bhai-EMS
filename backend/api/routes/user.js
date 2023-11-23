@@ -26,18 +26,12 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        console.log('====================================');
-        console.log(email, password );
-        console.log('====================================');
         if (!email || !password ) return res.status(400).json({ message: 'Invalid Credentials' });
         const user = await userScheme.findOne({ email });
        
         if (!user || ! bcrypt.compare(password, user.password)) {
             return res.status(401).json({ message: 'Invalid Credentials' });
         }
-        console.log('====================================');
-       console.log("here");
-       console.log('====================================');
         const token = jwt.sign({ userId: user._id, email: user.email, name: user.name }, process.env.JWT_SECRET, { expiresIn: '2h' });
         res.status(200).json({ message: 'Successfully Logged in', token });
     } catch (error) {

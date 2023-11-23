@@ -15,7 +15,6 @@ var storage = multer.diskStorage({
 })
 var upload = multer({ storage: storage })
 router.post("/addevent", upload.single('file'), (req, res, next) => {
-
     try {
         if (req.body.isStanding === 'true') {
             const newevent = new eventSchema({
@@ -189,35 +188,14 @@ router.get('/ongoingevent', (req, res, next) => {
         })
     }
 })
-
-router.get('/:id', (req, res, next) => {
+router.post('/delete', (req, res, next) => {
     try {
-        const id = req.params.id;
-        eventSchema.findById(id)
-            .exec()
-            .then((doc => {
-                if (doc) {
-                    res.status(320).json({
-                        doc
-                    })
-                }
-                else {
-                    res.status(206).json({
-                        message: "No Event Found"
-                    })
-                }
-            }))
-    } catch (error) {
-        res.status(404).status({
-            message: "Not Found"
-        })
-    }
-});
 
-router.patch('/:id', (req, res, next) => {
-    try {
-        const id = req.params.id;
+        const id = req.body.id;
         const neweventDetails = {};
+        console.log('====================================');
+        console.log(id);
+        console.log('====================================');
         for (const i of req.body) {
             neweventDetails[i.propName] = i.value;
         }
@@ -243,7 +221,32 @@ router.patch('/:id', (req, res, next) => {
     }
 })
 
-router.delete('/:id', (req, res, next) => {
+router.get('/:id', (req, res, next) => {
+    try {
+        const id = req.params.id;
+        eventSchema.findById(id)
+            .exec()
+            .then((doc => {
+                if (doc) {
+                    res.status(320).json({
+                        doc
+                    })
+                }
+                else {
+                    res.status(206).json({
+                        message: "No Event Found"
+                    })
+                }
+            }))
+    } catch (error) {
+        res.status(404).status({
+            message: "Not Found"
+        })
+    }
+});
+
+
+router.post('/:id', (req, res, next) => {
     try {
         eventSchema.findByIdAndRemove(req.params.id, (err, doc) => {
             if (!err) {
